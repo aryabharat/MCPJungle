@@ -37,6 +37,9 @@ var startServerCmd = &cobra.Command{
 	Long: "Starts the MCPJungle HTTP registry server and the MCP Proxy server.\n" +
 		"The server is started in Development mode by default, which is ideal for individual users.\n",
 	RunE: runStartServer,
+	Annotations: map[string]string{
+		"group": "basic",
+	},
 }
 
 func init() {

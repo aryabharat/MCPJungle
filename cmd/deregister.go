@@ -11,6 +11,9 @@ var deregisterMCPServerCmd = &cobra.Command{
 	Long:  "Remove an MCP server from the registry. This also deregisters all tools provided by the server.",
 	Args:  cobra.ExactArgs(1),
 	RunE:  runDeregisterMCPServer,
+	Annotations: map[string]string{
+		"group": "basic",
+	},
 }
 
 func init() {

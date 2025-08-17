@@ -10,6 +10,9 @@ var disableCmd = &cobra.Command{
 		"If a server is specified, all tools provided by that server will be disabled.\n" +
 		"If a tool is disabled, it cannot be viewed or called by mcp clients.",
 	RunE: runDisableTools,
+	Annotations: map[string]string{
+		"group": "basic",
+	},
 }
 
 func init() {

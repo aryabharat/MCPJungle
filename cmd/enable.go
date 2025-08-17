@@ -13,6 +13,9 @@ var enableCmd = &cobra.Command{
 		"If a server is specified, all tools provided by that server will be enabled.\n" +
 		"If a tool is enabled, it can be viewed and called by mcp clients.",
 	RunE: runEnableTools,
+	Annotations: map[string]string{
+		"group": "basic",
+	},
 }
 
 func init() {

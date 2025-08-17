@@ -10,6 +10,9 @@ import (
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create resources",
+	Annotations: map[string]string{
+		"group": "advanced",
+	},
 }
 
 var createMcpClientCmd = &cobra.Command{

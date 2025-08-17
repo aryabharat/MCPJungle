@@ -13,6 +13,9 @@ var usageCmd = &cobra.Command{
 	Short: "Get usage information for a MCP tool",
 	Args:  cobra.ExactArgs(1),
 	RunE:  runGetToolUsage,
+	Annotations: map[string]string{
+		"group": "basic",
+	},
 }
 
 func init() {

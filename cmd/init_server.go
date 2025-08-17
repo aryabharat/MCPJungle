@@ -12,6 +12,9 @@ var initServerCmd = &cobra.Command{
 	Long: "If the MCPJungle Server was started in Production Mode, use this command to initialize the server.\n" +
 		"Initialization is required before you can use the server.\n",
 	RunE: runInitServer,
+	Annotations: map[string]string{
+		"group": "advanced",
+	},
 }
 
 func init() {

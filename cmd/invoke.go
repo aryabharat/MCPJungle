@@ -17,6 +17,9 @@ var invokeToolCmd = &cobra.Command{
 	Long:  "Invokes a tool supplied by a registered MCP server",
 	Args:  cobra.ExactArgs(1),
 	RunE:  runInvokeTool,
+	Annotations: map[string]string{
+		"group": "basic",
+	},
 }
 
 func init() {

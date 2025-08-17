@@ -40,6 +40,9 @@ var registerMCPServerCmd = &cobra.Command{
 		return nil
 	},
 	RunE: runRegisterMCPServer,
+	Annotations: map[string]string{
+		"group": "basic",
+	},
 }
 
 func init() {
