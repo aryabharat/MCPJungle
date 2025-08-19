@@ -20,12 +20,13 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/mcpjungle/mcpjungle/client"
-	"github.com/mcpjungle/mcpjungle/cmd/config"
-	"github.com/spf13/cobra"
 	"net/http"
 	"sort"
 	"strconv"
+
+	"github.com/mcpjungle/mcpjungle/client"
+	"github.com/mcpjungle/mcpjungle/cmd/config"
+	"github.com/spf13/cobra"
 )
 
 // subCommandGroup defines a type for categorizing subcommands into groups
@@ -42,6 +43,17 @@ const (
 const unorderedCommand = -1
 
 // TODO: refactor: all commands should use cmd.Print..() instead of fmt.Print..() statements to produce outputs.
+
+// displayASCIIArt prints the MCPJungle ASCII art banner
+func displayASCIIArt(cmd *cobra.Command) {
+	cmd.Println(`
+  ███╗   ███╗ ██████╗██████╗     ██╗██╗   ██╗███╗   ██╗ ██████╗ ██╗     ███████╗
+  ████╗ ████║██╔════╝██╔══██╗    ██║██║   ██║████╗  ██║██╔════╝ ██║     ██╔════╝
+  ██╔████╔██║██║     ██████╔╝    ██║██║   ██║██╔██╗ ██║██║  ███╗██║     █████╗  
+  ██║╚██╔╝██║██║     ██╔═══╝  ██╗██║██║   ██║██║╚██╗██║██║   ██║██║     ██╔══╝  
+  ██║ ╚═╝ ██║╚██████╗██║      ╚█║██║╚██████╔╝██║ ╚████║╚██████╔╝███████╗███████╗
+  ╚═╝     ╚═╝ ╚═════╝╚═╝       ╚╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚══════╝`)
+}
 
 // SilentErr is a sentinel error used to indicate that the command should not print an error message
 // This is useful when we handle error printing internally but want main to exit with a non-zero status.
@@ -67,6 +79,12 @@ var rootCmd = &cobra.Command{
 	},
 
 	Run: func(cmd *cobra.Command, args []string) {
+		// check if version flag was provided
+		if versionFlag, _ := cmd.Flags().GetBool("version"); versionFlag {
+			// Execute the version command directly
+			versionCmd.Run(cmd, args)
+			return
+		}
 		// show custom help message when no subcommand is provided
 		displayRootCmdHelpMsg(cmd)
 	},
@@ -81,6 +99,9 @@ func Execute() error {
 
 	// only print usage and error messages if the command usage is incorrect
 	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
+		// Display ASCII art for unknown flag errors
+		displayASCIIArt(cmd)
+		cmd.Println()
 		cmd.Println(err)
 		cmd.Println(cmd.UsageString())
 		return SilentErr
@@ -92,6 +113,9 @@ func Execute() error {
 		"http://127.0.0.1:"+BindPortDefault,
 		"Base URL of the MCPJungle registry server",
 	)
+
+	// Add version flags (-v and --version)
+	rootCmd.Flags().BoolP("version", "v", false, "Display version information")
 
 	// Initialize the API client with the registry server URL & client configuration (if any)
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
@@ -105,6 +129,9 @@ func Execute() error {
 // displayRootCmdHelpMsg displays custom help message for the root command, ie,
 // when the mcpjungle CLI is run without any subcommands.
 func displayRootCmdHelpMsg(cmd *cobra.Command) {
+	// Display ASCII art
+	displayASCIIArt(cmd)
+	cmd.Println()
 	cmd.Println(cmd.Short)
 	cmd.Println()
 	cmd.Printf("Usage:\n  %s\n\n", cmd.UseLine())
