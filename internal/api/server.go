@@ -153,6 +153,11 @@ func newRouter(opts *ServerOptions) (*gin.Engine, error) {
 		userAPI.POST("/tools/invoke", invokeToolHandler(opts.MCPService))
 		userAPI.GET("/tool", getToolHandler(opts.MCPService))
 
+		// Prompt endpoints
+		userAPI.GET("/prompts", listPromptsHandler(opts.MCPService))
+		userAPI.GET("/prompt", getPromptHandler(opts.MCPService))
+		userAPI.POST("/prompts/get", getPromptWithArgsHandler(opts.MCPService))
+
 		userAPI.GET("/users/whoami", requireProdMode, whoAmIHandler())
 	}
 
@@ -164,6 +169,9 @@ func newRouter(opts *ServerOptions) (*gin.Engine, error) {
 
 		adminAPI.POST("/tools/enable", enableToolsHandler(opts.MCPService))
 		adminAPI.POST("/tools/disable", disableToolsHandler(opts.MCPService))
+
+		adminAPI.POST("/prompts/enable", enablePromptsHandler(opts.MCPService))
+		adminAPI.POST("/prompts/disable", disablePromptsHandler(opts.MCPService))
 
 		// endpoints for managing MCP clients (production mode only)
 		adminAPI.GET(

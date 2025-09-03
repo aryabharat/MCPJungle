@@ -97,6 +97,7 @@ func runStartServer(cmd *cobra.Command, args []string) error {
 		"MCPJungle Proxy MCP Server",
 		"0.0.1",
 		server.WithToolCapabilities(true),
+		server.WithPromptCapabilities(true),
 	)
 
 	mcpService, err := mcp.NewMCPService(dbConn, mcpProxyServer)

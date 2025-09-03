@@ -18,12 +18,20 @@ var listCmd = &cobra.Command{
 }
 
 var listToolsCmdServerName string
+var listPromptsCmdServerName string
 
 var listToolsCmd = &cobra.Command{
 	Use:   "tools",
 	Short: "List available tools",
 	Long:  "List tools available either from a specific MCP server or across all MCP servers registered in the registry.",
 	RunE:  runListTools,
+}
+
+var listPromptsCmd = &cobra.Command{
+	Use:   "prompts",
+	Short: "List available prompts",
+	Long:  "List prompt templates available either from a specific MCP server or across all MCP servers registered in the registry.",
+	RunE:  runListPrompts,
 }
 
 var listServersCmd = &cobra.Command{
@@ -61,7 +69,15 @@ func init() {
 		"Filter tools by server name",
 	)
 
+	listPromptsCmd.Flags().StringVar(
+		&listPromptsCmdServerName,
+		"server",
+		"",
+		"Filter prompts by server name",
+	)
+
 	listCmd.AddCommand(listToolsCmd)
+	listCmd.AddCommand(listPromptsCmd)
 	listCmd.AddCommand(listServersCmd)
 	listCmd.AddCommand(listMcpClientsCmd)
 	listCmd.AddCommand(listUsersCmd)
@@ -213,6 +229,31 @@ func runListGroups(cmd *cobra.Command, args []string) error {
 			cmd.Println()
 		}
 	}
+
+	return nil
+}
+
+func runListPrompts(cmd *cobra.Command, args []string) error {
+	prompts, err := apiClient.ListPrompts(listPromptsCmdServerName)
+	if err != nil {
+		return fmt.Errorf("failed to list prompts: %w", err)
+	}
+
+	if len(prompts) == 0 {
+		fmt.Println("There are no prompts in the registry")
+		return nil
+	}
+	for i, p := range prompts {
+		ed := "ENABLED"
+		if !p.Enabled {
+			ed = "DISABLED"
+		}
+		fmt.Printf("%d. %s  [%s]\n", i+1, p.Name, ed)
+		fmt.Println(p.Description)
+		fmt.Println()
+	}
+
+	fmt.Println("Run 'get prompt <prompt name>' to retrieve a prompt template")
 
 	return nil
 }
